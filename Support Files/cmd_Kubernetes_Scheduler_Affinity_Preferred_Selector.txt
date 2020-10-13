@@ -1,0 +1,42 @@
+ kubectl describe nodes | egrep "Name:|Labels:" -A 7
+ 
+ 
+ nodeaffinity-preferred.yaml
+ 
+ 
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: nodeaffinity-preferred
+ spec:
+   replicas: 2
+   selector:
+     matchLabels:
+       app: nginx
+   template:
+     metadata:
+       labels:
+         app: nginx
+     spec:
+       affinity:
+         nodeAffinity:
+           preferredDuringSchedulingIgnoredDuringExecution:
+           - weight: 1
+             preference:
+               matchExpressions:
+               - key: availabilityzone
+                 operator: In
+                 values:
+                 - zone1
+                 - zone2
+       containers:
+       - name: nginx
+         image: nginx:latest
+         ports:
+         - containerPort: 80
+ 
+ kubectl apply -f nodeaffinity-preferred.yaml
+ 
+ kubectl get pods -o wide
+ 
+kubectl delete deployment nodeaffinity-preferred

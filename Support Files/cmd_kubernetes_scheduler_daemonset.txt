@@ -1,0 +1,76 @@
+cmd_kubernetes_scheduler_daemonset
+
+
+sample-ds.yaml
+
+
+apiVersion: apps/v1
+kind: DaemonSet                    
+metadata:
+  name: sample-ds                
+spec:
+  selector:
+    matchLabels:
+      tier: ds-label
+  template:
+    metadata:
+      labels:
+        tier: ds-label
+    spec:
+      containers:
+      - name: redis
+        image: redis:5.0
+
+
+kubectl apply -f sample-ds.yaml
+
+~~~~~~~~~~~~~~~~~~~
+update strategy - OnDelete
+
+
+
+kubectl edit ds sample-ds 
+
+
+
+
+    
+
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: OnDelete    
+
+kubectl edit ds sample-ds    
+
+kubectl get all
+
+version change to 5.0.9
+
+kubectl get all
+kubectl delete pod <<pod name>>
+
+kubectl get all
+
+~~~~~~~~~~~~~~~~~~~
+update strategy - RollingUpdate
+
+
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+
+
+kubectl edit ds sample-ds    
+
+kubectl get all
+
+version change to latest
+
+kubectl get all
+kubectl delete pod <<pod name>>
+
+kubectl get all    
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,10 @@
+cd /etc/kubernetes/manifests
+
+
+cat kube-scheduler.yaml
+
+kubectl get all --all-namespaces
+
+kubectl exec -it pod/kube-scheduler-node2 --namespace=kube-system -- /bin/sh
+
+kubectl describe pod/kube-scheduler-node2 --namespace=kube-system

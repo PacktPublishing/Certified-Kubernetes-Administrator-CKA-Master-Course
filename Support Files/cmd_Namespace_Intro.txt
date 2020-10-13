@@ -1,0 +1,74 @@
+kubectl get ns
+
+
+customns1.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-ns-1
+
+
+customns2.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-ns-2
+
+kubectl create -f customns1.yaml
+kubectl create -f customns2.yaml
+
+kubectl get ns
+
+kubectl run my-redis --image=redis --namespace=my-ns-1
+
+kubectl run my-nginx --image=nginx --namespace=my-ns-2
+
+kubectl get deployment
+
+kubectl get deployment --all-namespaces
+
+kubectl get deployment --namespace=my-ns-1
+
+kubectl get deployment --namespace=my-ns-2
+
+
+kubectl config current-context
+
+kubectl config set-context my-context-1 --namespace=my-ns-1 --cluster=minikube --user=minikube
+
+kubectl config view
+ 
+kubectl config set-context my-context-2 --namespace=my-ns-2 --cluster=minikube --user=minikube
+
+kubectl config view 
+
+kubectl config use-context my-context-1
+
+kubectl config current-context
+
+kubectl get deployment
+
+kubectl describe deployment my-redis
+
+kubectl config use-context my-context-2
+
+kubectl config current-context
+
+kubectl get deployment
+
+kubectl describe deployment my-nginx
+
+
+kubectl delete ns my-ns-2
+
+kubectl get deployment
+
+kubectl run my-nginix-2 --image=nginx
+
+kubectl config set-context my-context --namespace=""
+
+
+
+kubectl config use-context minikube

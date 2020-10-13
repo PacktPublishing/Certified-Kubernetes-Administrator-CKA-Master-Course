@@ -1,0 +1,21 @@
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/examples/master/guestbook/all-in-one/guestbook-all-in-one.yaml
+
+kubectl get deployment
+
+kubectl get pods --show-labels
+
+kubectl get pods -Lapp -Ltier -Lrole
+
+kubectl get pods redis-master-<id> -o yaml
+
+kubectl get pods --selector="app=redis" --show-labels
+
+kubectl get pods --selector="app=redis,role=slave" --show-labels
+
+kubectl get pods --selector="role in (master,slave)" --show-labels
+
+kubectl get pods --selector="app" --show-labels
+
+#single quote to be used
+kubectl get pods --selector='!app' --show-labels
+

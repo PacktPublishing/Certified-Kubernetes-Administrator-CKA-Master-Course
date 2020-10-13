@@ -1,0 +1,120 @@
+kubectl apply -f pv_volume.yaml
+
+kubectl get pv task-pv-volume
+
+kubectl apply -f pv_claim.yaml
+
+kubectl get pv task-pv-volume
+kubectl get pvc task-pv-claim
+
+
+kubectl apply -f pv_pod.yaml
+kubectl apply -f pv_pod_1.yaml
+kubectl get pod task-pv-pod
+kubectl get pod task-pv-pod-1
+
+kubectl port-forward --address 0.0.0.0 task-pv-pod 80:80
+kubectl port-forward --address 0.0.0.0 task-pv-pod-1 8080:80
+
+echo 'This is test for Persistent storage' > /mnt/data/index.html
+
+kubectl exec -it task-pv-pod -- /bin/bash
+
+cd /usr/share/nginx/html
+
+
+kubectl delete pod task-pv-pod
+
+kubectl delete pod task-pv-pod-1
+kubectl delete pvc task-pv-claim
+kubectl delete pv task-pv-volume
+
+
+cat /mnt/data/index.html
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~`
+Yaml files
+~~~~~~~~~~~
+pv_volume.yaml
+~~~~~~~~~~~~~
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+    
+    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pv_claim.yaml
+~~~~~~~~~~~~
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+      
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+pv_pod.yaml
+~~~~~~~~~~
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task-pv-pod
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage
+          
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+pv_pod_1.yaml
+~~~~~~~~~~~~~
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task-pv-pod-1
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage
+          
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+

@@ -1,0 +1,53 @@
+kubernetes_scheduler_taints
+
+kubectl describe node node2
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+kubectl create deployment tainttoleration-nginx-deployment --image=nginx
+
+
+
+
+kubectl get all
+
+kubectl scale deployment tainttoleration-nginx-deployment --replicas=8
+
+kubectl get pods -o wide
+
+
+kubectl taint nodes node1 hardware=ssd:NoExecute
+
+kubectl describe node node1
+
+
+#see eviction
+kubectl describe pods | grep Events -A 20
+
+
+kubectl taint nodes node4 NodeMaint=monthly:NoSchedule
+
+kubectl describe node node4
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+kubectl taint nodes node4 CostCode=CC1:NoSchedule
+kubectl taint nodes node4 DriverUpdate:PreferNoSchedule
+
+kubectl describe node node1
+kubectl describe node node4
+kubectl describe nodes | egrep "Name:|Taints:" -A 5
+
+
+kubectl taint nodes node4 CostCode:NoSchedule-
+kubectl taint nodes node4 DriverUpdate:PreferNoSchedule-
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+
+kubectl delete deployment tainttoleration-nginx-deployment
+kubectl get all
+
+kubectl describe nodes | egrep "Name:|Taints:"

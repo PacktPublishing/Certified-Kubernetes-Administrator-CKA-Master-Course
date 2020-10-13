@@ -1,0 +1,94 @@
+ 
+ kubectl taint nodes node1 hardware=ssd:NoExecute
+ kubectl taint nodes node4 hardware=ssd:NoExecute
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ 
+ kubectl get pods -o wide
+ 
+ podaffinity-nginx.yaml
+ 
+ 
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: podaffinity-nginx
+ spec:
+   replicas: 3
+   selector:
+     matchLabels:
+       app: nginxaffinity
+   template:
+     metadata:
+       labels:
+         app: nginxaffinity
+     spec:
+       affinity:
+         podAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+           - topologyKey: kubernetes.io/hostname
+             labelSelector: 
+               matchExpressions:  
+               - key: app
+                 operator: In
+                 values:
+                 - redis
+       containers:
+       - name: nginx
+         image: nginx:latest
+         ports:
+         - containerPort: 80
+ 
+ kubectl apply -f podaffinity-nginx.yaml
+ 
+ kubectl get pods -o wide --show-labels
+ 
+ ~~~~~~~~~~~~~~~~~~~~~``
+ 
+ podaffinity-redis-cache.yaml
+ 
+ 
+ apiVersion: apps/v1 
+ kind: Deployment
+ metadata:
+   name: podaffinity-redis-cache
+ spec:
+   selector:
+     matchLabels:
+       app: redis
+   replicas: 1
+   template:
+     metadata:
+       labels:
+         app: redis
+     spec:
+       containers:
+       - name: redis
+         image: redis
+         resources:
+           requests:
+             cpu: 100m
+             memory: 100Mi
+         ports:
+         - containerPort: 6311
+ 
+ 
+ 
+ kubectl apply -f podaffinity-redis-cache.yaml
+ 
+ kubectl get pods -o wide --show-labels
+ 
+ 
+ kubectl delete deployment podaffinity-redis-cache
+ 
+ kubectl get pods -o wide --show-labels
+ 
+ kubectl delete deployment podaffinity-nginx
+ 
+ 
+ 
+ kubectl patch node node1 -p '{"spec":{"taints":[]}}'
+ kubectl patch node node4 -p '{"spec":{"taints":[]}}'
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"

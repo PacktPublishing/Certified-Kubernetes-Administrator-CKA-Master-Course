@@ -1,0 +1,41 @@
+kubectl apply -f replicaset-phpcolor.yaml
+
+~~~~~~~~~~~~~~~~
+replicaset-phpcolor.yaml
+~~~~~~~~~~~~~
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: phpcolorapp
+  labels:
+    color: blue
+    version: "1"
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      color: blue      
+  template:
+    metadata:
+      labels:
+        color: blue
+    spec:
+      containers:
+      - name: phpallcolor-blue
+        image: "muthu4all/php_app_color:blue"
+
+
+~~~~~~~~~~~~~~~~~~~~
+
+
+
+kubectl get rs
+
+
+kubectl describe rs/phpcolorapp
+
+kubectl get pods
+
+kubectl delete pods/phpcolorapp-abcde

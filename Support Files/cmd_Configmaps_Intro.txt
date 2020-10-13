@@ -1,0 +1,111 @@
+myconfigmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  player_initial_lives: 3
+  ui_properties_file_name: "myuser-interface.properties"
+  game.properties: |
+    enemy.types=firstline,zoomzoom
+    player.maximum-lives=5
+  user-interface.properties: |
+    color.good=green
+    color.bad=red
+    allow.textmode=true
+
+kubectl apply -f myconfigmap.yaml
+
+kubectl describe configmaps my-config
+
+kubectl get configmaps my-config -o yaml
+
+
+kubectl create configmap myconfig-fromurl --from-file=game.properties
+
+kubectl describe configmaps myconfig-fromurl
+
+
+kubectl get configmaps myconfig-fromurl -o yaml
+
+kubectl create -f configmap-multikeys.yaml
+kubectl create -f pod-configmap-env-var-valueFrom.yaml
+
+kubectl get configmaps special-config -o yaml
+
+kubectl describe pod/dapi-test-pod
+
+kubectl logs dapi-test-pod
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+myconfigmap.yaml
+~~~~~~~~~~~~~~~
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  player_initial_lives: "3"
+  ui_properties_file_name: "myuser-interface.properties"
+  game.properties: |
+    enemy.types=firstline,zoomzoom
+    player.maximum-lives="5"
+  user-interface.properties: |
+    color.good=green
+    color.bad=red
+    allow.textmode=true
+    
+~~~~~~~~~~~~~~~
+game.properties
+~~~~~~~~~~~~~~~
+enemies=aliens
+lives=3
+enemies.cheat=true
+enemies.cheat.level=xyz
+secret.code.passphrase=XXXXXYYYYYYY
+secret.code.allowed=true
+secret.code.lives=30
+
+
+~~~~~~~~~~~~~~~
+configmap-multikeys.yaml
+~~~~~~~~~~~~~~~
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: default
+data:
+  SPECIAL_LEVEL: Level4
+  SPECIAL_TYPE: poweruser
+  
+
+~~~~~~~~~~~~~~~
+pod-configmap-env-var-valueFrom.yaml
+~~~~~~~~~~~~~~~
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh", "-c", "echo $(SPECIAL_LEVEL_KEY) $(SPECIAL_TYPE_KEY)" ]
+      env:
+        - name: SPECIAL_LEVEL_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: special-config
+              key: SPECIAL_LEVEL
+        - name: SPECIAL_TYPE_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: special-config
+              key: SPECIAL_TYPE
+  restartPolicy: Never
+
+~~~~~~~~~~~~~~~

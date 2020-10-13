@@ -1,0 +1,10 @@
+kubectl get all --all-namespaces
+
+kubectl exec -it pod/kube-proxy-fcz7s  --namespace=kube-system -- /bin/sh
+
+
+kubectl describe daemonset.apps/kube-proxy --namespace=kube-system
+
+kubectl describe pod/kube-proxy-fcz7s --namespace=kube-system
+
+kubectl logs -f pod/kube-proxy-7xklb --namespace=kube-system

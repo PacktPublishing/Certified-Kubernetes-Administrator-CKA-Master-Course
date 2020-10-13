@@ -1,0 +1,83 @@
+ kubectl describe node node2
+ 
+ Taints:             node-role.kubernetes.io/master:NoSchedule
+ 
+ kubectl describe pod etcd-node2 --namespace=kube-system
+ 
+ kubectl get pods --namespace=kube-system
+ 
+ Tolerations:       :NoExecute
+ 
+ #kubectl edit deploy tainttoleration-nginx-deployment
+ 
+ kubectl get pods -o wide
+ 
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ 
+ 
+ kubectl taint nodes node4 CostCode=CC1:NoSchedule
+ kubectl taint nodes node1 CostCode=CC1:NoSchedule
+ 
+ 
+ kubectl create deployment tainttoleration-nginx-deployment --image=nginx
+ 
+ kubectl get pods -o wide
+ 
+ kubectl scale deployment tainttoleration-nginx-deployment --replicas=4
+ 
+ kubectl get pods -o wide
+ 
+ kubectl delete deployment tainttoleration-nginx-deployment
+ 
+ 
+ 
+ 
+ ~~~~~~~~~~
+ 
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: withtoleration-nginx-deployment
+   labels:
+     app: nginx
+ spec:
+   replicas: 4
+   selector:
+     matchLabels:
+       app: nginx
+   template:
+     metadata:
+       labels:
+         app: nginx
+     spec:
+       tolerations:
+       - key: "CostCode"
+         operator: "Equal"
+         value: "CC1"
+         effect: "NoSchedule"
+       containers:
+       - name: nginx
+         image: nginx:latest
+         ports:
+         - containerPort: 80
+         
+         
+ kubectl create -f tainttoleration-nginx-deployment.yaml
+ 
+ kubectl get pods -o wide
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ #kubectl scale deployment withtoleration-nginx-deployment --replicas=8
+ 
+ 
+ kubectl delete deployment withtoleration-nginx-deployment
+ 
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ #kubectl describe node node4
+ 
+ kubectl patch node node1 -p '{"spec":{"taints":[]}}'
+kubectl patch node node4 -p '{"spec":{"taints":[]}}'

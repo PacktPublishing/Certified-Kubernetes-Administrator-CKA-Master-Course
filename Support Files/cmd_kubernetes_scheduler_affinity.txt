@@ -1,0 +1,363 @@
+kubernetes_scheduler_affinity
+
+Node Affinity
+~~~~~~~~~~~
+
+nodeaffinity-required.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeaffinity-required
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: availabilityzone
+                operator: In
+                values:
+                - zone1
+                - zone2
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+
+
+kubectl apply -f nodeaffinity-required.yaml
+
+kubectl get pods -o wide
+
+kubectl describe pod <<podname>> | grep Events: -A 10
+
+
+kubectl label nodes node4 availabilityzone=zone1
+
+kubectl get pods
+
+kubectl describe nodes node4 | grep availabilityzone
+
+kubectl label nodes node4 availabilityzone-
+
+kubectl describe nodes node4 | grep availabilityzone
+
+kubectl describe nodes | egrep "Name:|Labels:" -A 7
+
+kubectl get pods -o wide
+
+
+kubectl scale deployment nodeaffinity-required --replicas=4
+
+kubectl get pods -o wide
+
+kubectl label nodes node4 availabilityzone=zone2
+
+kubectl label nodes node4 availabilityzone-
+kubectl delete deployment nodeaffinity-required
+
+kubectl get all
+
+~~~~~~~
+
+
+kubectl describe nodes | egrep "Name:|Labels:" -A 7
+
+
+nodeaffinity-preferred.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeaffinity-preferred
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: availabilityzone
+                operator: In
+                values:
+                - zone1
+                - zone2
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+kubectl apply -f nodeaffinity-preferred.yaml
+
+kubectl get pods -o wide
+
+kubectl delete deployment nodeaffinity-preferred
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+
+Pod Affinity
+~~~~~~~~~~
+
+#Protect pods getting created in node1 and node4
+
+kubectl taint nodes node1 hardware=ssd:NoExecute
+kubectl taint nodes node4 hardware=ssd:NoExecute
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+kubectl get pods -o wide
+
+podaffinity-nginx.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podaffinity-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginxaffinity
+  template:
+    metadata:
+      labels:
+        app: nginxaffinity
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector: 
+              matchExpressions:  
+              - key: app
+                operator: In
+                values:
+                - redis
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+kubectl apply -f podaffinity-nginx.yaml
+
+kubectl get pods -o wide --show-labels
+
+~~~~~~~~~~~~~~~~~~~~~``
+
+podaffinity-redis-cache.yaml
+
+
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: podaffinity-redis-cache
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 6311
+
+
+
+kubectl apply -f podaffinity-redis-cache.yaml
+
+kubectl get pods -o wide --show-labels
+
+
+kubectl delete deployment podaffinity-redis-cache
+
+kubectl get pods -o wide --show-labels
+
+kubectl delete deployment podaffinity-nginx
+
+
+
+kubectl patch node node1 -p '{"spec":{"taints":[]}}'
+kubectl patch node node4 -p '{"spec":{"taints":[]}}'
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+~~~~~~~~~~~~~~~~~~~~~~~
+
+anti-affinity
+
+
+pod-anti-affinity-nginx.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-anti-affinity-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginxantiaffinity
+  template:
+    metadata:
+      labels:
+        app: nginxantiaffinity
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+
+
+
+pod-anti-affinity-https.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-anti-affinity-httpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: anti-nginx
+  template:
+    metadata:
+      labels:
+        app: anti-nginx
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector: 
+              matchExpressions:  
+              - key: app
+                operator: In
+                values:
+                - nginxantiaffinity
+      containers:
+      - name: httpd
+        image: httpd
+        ports:
+        - containerPort: 80
+        
+        
+
+
+kubectl apply -f pod-anti-affinity-nginx.yaml
+
+kubectl get pods -o wide --show-labels
+
+kubectl apply -f pod-anti-affinity-https.yaml
+
+kubectl get pods -o wide --show-labels
+
+
+
+kubectl delete deployment pod-anti-affinity-nginx  
+
+kubectl get pods -o wide --show-labels
+
+kubectl delete deployment pod-anti-affinity-httpd
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+
+Self Repelling pods
+~~~~~~~~~~~~~~~~~
+
+selfrepel.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selfrepel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: selfrepel
+  template:
+    metadata:
+      labels:
+        app: selfrepel
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector: 
+              matchExpressions:  
+              - key: app
+                operator: In
+                values:
+                - selfrepel
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        
+        
+kubectl apply -f selfrepel.yaml
+
+
+kubectl get pods -o wide --show-labels
+
+kubectl scale deployment selfrepel --replicas=2
+
+kubectl scale deployment selfrepel --replicas=3
+
+kubectl scale deployment selfrepel --replicas=4
+
+
+kubectl delete deployment selfrepel
+
+kubectl get all

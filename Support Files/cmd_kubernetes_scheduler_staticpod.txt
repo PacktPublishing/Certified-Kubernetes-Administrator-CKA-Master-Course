@@ -1,0 +1,70 @@
+kubernetes_scheduler_staticpod
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+mkdir /etc/kubelet.d/
+
+run with 
+--pod-manifest-path=/etc/kubelet.d/
+
+or
+
+staticPodPath: <the directory> in kubelet configuration file
+
+or edit in 
+
+/etc/kubernetes/kubelet 
+
+
+~~~~~~~~~~~~
+
+/etc/kubelet.d/static-web.yaml
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: nginx
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+
+
+
+
+webhosted pod manifest
+~~~~~~~~~~~~~~~~~~~~
+
+--manifest-url=<URL>
+
+
+
+static-web1.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: nginx
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+          
+          
+
+
+systemctl restart kubelet
+
+

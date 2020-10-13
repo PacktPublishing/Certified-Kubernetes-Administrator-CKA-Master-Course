@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-anti-affinity-httpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: anti-nginx
+  template:
+    metadata:
+      labels:
+        app: anti-nginx
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector: 
+              matchExpressions:  
+              - key: app
+                operator: In
+                values:
+                - nginxantiaffinity
+      containers:
+      - name: httpd
+        image: httpd
+        ports:
+        - containerPort: 80

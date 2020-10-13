@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-anti-affinity-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginxantiaffinity
+  template:
+    metadata:
+      labels:
+        app: nginxantiaffinity
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80

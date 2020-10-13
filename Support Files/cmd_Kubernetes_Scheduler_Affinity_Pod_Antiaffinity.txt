@@ -1,0 +1,77 @@
+ pod-anti-affinity-nginx.yaml
+ 
+ 
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: pod-anti-affinity-nginx
+ spec:
+   replicas: 2
+   selector:
+     matchLabels:
+       app: nginxantiaffinity
+   template:
+     metadata:
+       labels:
+         app: nginxantiaffinity
+     spec:
+       containers:
+       - name: nginx
+         image: nginx:latest
+         ports:
+         - containerPort: 80
+ 
+ 
+ 
+ 
+ pod-anti-affinity-https.yaml
+ 
+ 
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: pod-anti-affinity-httpd
+ spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: anti-nginx
+   template:
+     metadata:
+       labels:
+         app: anti-nginx
+     spec:
+       affinity:
+         podAntiAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+           - topologyKey: kubernetes.io/hostname
+             labelSelector: 
+               matchExpressions:  
+               - key: app
+                 operator: In
+                 values:
+                 - nginxantiaffinity
+       containers:
+       - name: httpd
+         image: httpd
+         ports:
+         - containerPort: 80
+         
+         
+ 
+ 
+ kubectl apply -f pod-anti-affinity-nginx.yaml
+ 
+ kubectl get pods -o wide --show-labels
+ 
+ kubectl apply -f pod-anti-affinity-https.yaml
+ 
+ kubectl get pods -o wide --show-labels
+ 
+ 
+ 
+ kubectl delete deployment pod-anti-affinity-nginx  
+ 
+ kubectl get pods -o wide --show-labels
+ 
+kubectl delete deployment pod-anti-affinity-httpd

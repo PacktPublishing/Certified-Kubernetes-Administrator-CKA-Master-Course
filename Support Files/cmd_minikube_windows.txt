@@ -1,0 +1,23 @@
+
+https://www.virtualbox.org/wiki/Downloads
+
+minikube status
+
+minikube start --driver=<driver_name>
+
+minikube start --driver=virtualbox
+
+
+kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10
+
+kubectl get pods
+
+minikube dashboard
+
+
+minikube stop
+
+minikube delete
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+

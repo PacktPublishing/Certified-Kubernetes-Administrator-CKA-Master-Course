@@ -1,0 +1,41 @@
+
+minikube status
+
+
+kubectl run nginxrun --generator=run-pod/v1 --image=nginx
+
+kubectl get pods nginxrun
+
+kubectl delete pod/nginxrun
+
+https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/
+
+
+pod-nginx.yaml
+~~~~~~~~~~~~~
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-yaml
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+          name: http
+          
+          
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~          
+          
+
+
+kubectl apply -f pod-nginx.yaml
+
+kubectl get pods
+
+kubectl describe pods nginx-yaml
+
+
+

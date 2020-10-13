@@ -1,0 +1,13 @@
+
+https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kube-apiserver
+https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kube-controller-manager
+https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kube-scheduler
+https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
+  
+  
+cd /etc/kubernetes/manifests
+    
+cat kube-controller-manager.yaml
+  
+kubectl describe pod/kube-controller-manager-node2 --namespace=kube-system
+

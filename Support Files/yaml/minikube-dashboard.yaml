@@ -1,0 +1,16 @@
+apiVersion : v1
+kind: Service
+metadata:
+  labels:
+    app: kubernetes-dashboard
+  name: kubernetes-dashboard-test
+  namespace: kube-system
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 9090
+    nodePort: 30000
+  selector:
+    app: kubernetes-dashboard
+  type: NodePort

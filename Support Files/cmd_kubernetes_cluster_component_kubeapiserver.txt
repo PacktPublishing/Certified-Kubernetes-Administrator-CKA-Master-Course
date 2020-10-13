@@ -1,0 +1,25 @@
+kubeapi server
+
+kubectl get all --all-namespaces
+
+kubectl describe pod/kube-apiserver-node2 --namespace=kube-system
+
+kubectl exec -it kube-apiserver-node2 --namespace=kube-system -- /bin/sh
+
+/etc/kubernetes/pki/
+
+cd /etc/kubernetes/manifests
+
+cat kube-apiserver.yaml
+
+/api/v1/namespaces/<namespace-name>/<resource-type-name>/<resource-name>
+
+kubectl proxy
+
+curl localhost:8001/api
+
+kubectl get pods
+
+curl localhost:8001/api/v1/nodes
+
+curl localhost:8001/api/v1/namespaces/kube-system/pods/kube-controller-manager-node2/log

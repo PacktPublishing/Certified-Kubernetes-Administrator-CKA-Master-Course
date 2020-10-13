@@ -1,0 +1,49 @@
+ selfrepel.yaml
+ 
+ 
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: selfrepel
+ spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: selfrepel
+   template:
+     metadata:
+       labels:
+         app: selfrepel
+     spec:
+       affinity:
+         podAntiAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+           - topologyKey: kubernetes.io/hostname
+             labelSelector: 
+               matchExpressions:  
+               - key: app
+                 operator: In
+                 values:
+                 - selfrepel
+       containers:
+       - name: nginx
+         image: nginx
+         ports:
+         - containerPort: 80
+         
+         
+ kubectl apply -f selfrepel.yaml
+ 
+ 
+ kubectl get pods -o wide --show-labels
+ 
+ kubectl scale deployment selfrepel --replicas=2
+ 
+ kubectl scale deployment selfrepel --replicas=3
+ 
+ kubectl scale deployment selfrepel --replicas=4
+ 
+ 
+ kubectl delete deployment selfrepel
+ 
+kubectl get all

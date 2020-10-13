@@ -1,0 +1,13 @@
+reboot
+
+sudo su
+
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
+systemctl enable kubelet
+systemctl start kubelet
+
+sudo kubelet --version
+
+
+# Image created here

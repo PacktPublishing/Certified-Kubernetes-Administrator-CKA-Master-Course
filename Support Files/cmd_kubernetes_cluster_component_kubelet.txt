@@ -1,0 +1,5 @@
+ps auxw | grep kubelet
+
+cat /etc/kubernetes/kubelet.conf
+
+journalctl -l -u kubelet

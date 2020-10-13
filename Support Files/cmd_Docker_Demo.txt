@@ -1,0 +1,39 @@
+
+
+docker version
+
+mkdir dockerdemo
+cd dockerdemo
+
+touch Dockerfile
+~~~~~~~~~~~~~`
+FROM php:7.0-apache  
+COPY . /var/www/html  
+EXPOSE 80
+~~~~~~~~~~~~~~
+
+
+index.php
+
+<?php
+
+$ip = $_SERVER['SERVER_ADDR']; 
+echo "IP Address is: $ip", "<br>"; 
+?>
+<p style="color:Maroon">This is MAROON.</p>
+
+~~~~~~~~~~~~~~~~~~~~````
+docker build -t php_app_color . 
+
+docker image tag php_app_color muthu4all/php_app_color:maroon
+
+docker login
+
+docker image push muthu4all/php_app_color:maroon
+
+docker run --name php_app_color -d -t -i -p 8080:80 muthu4all/php_app_color:maroon 
+
+docker container ls --format "table {{.ID}}\t{{.Status}}\t{{.Names}}"
+
+
+

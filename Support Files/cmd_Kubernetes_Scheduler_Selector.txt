@@ -1,0 +1,57 @@
+ kubectl get all --all-namespaces --show-labels 
+ 
+ kubectl get nodes --show-labels
+ 
+ kubectl get all --all-namespaces --selector="app" --show-labels
+ 
+ kubectl get pods --selector="app" --show-labels
+ 
+ 
+ kubectl get pods --show-labels 
+ 
+ kubectl get pods --show-labels | wc -l
+ 
+ kubectl get pods --show-labels --no-headers=true | wc -l
+ 
+ kubectl get pods --show-labels --no-headers=true
+ 
+ kubectl get pods --selector="app" --show-labels --no-headers=true | wc -l
+ 
+ 
+ kubectl get pods --selector="app=redis" --show-labels
+ 
+ kubectl get pods --selector="app=redis,role=slave" --show-labels
+ 
+ kubectl get pods --selector="role in (master,slave)" --show-labels
+ 
+ kubectl get pods --selector="app" --show-labels
+ 
+ #single quote to be used
+ kubectl get pods --selector='!app' --show-labels
+ 
+ 
+ kubectl get all --all-namespaces --selector="tier=control-plane" --show-labels
+ 
+ kubectl get all --all-namespaces  --selector="k8s-app" --show-labels
+ 
+ kubectl get all --n=kube-system  --selector="k8s-app" --show-labels
+ 
+ 
+ Task - selector multiple label for replicaset
+ 
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`````
+ 
+ #custom selector
+ 
+ kubectl get pods --selector="tier=frontend" --show-labels
+ 
+ 
+ 
+ kubectl get pods
+ 
+ kubectl describe pod frontend-custom
+ kubectl describe pod frontend-56fc5b6b47-xlc7g
+ 
+ kubectl get ep frontend -o json
+ 
+kubectl delete pod frontend-custom

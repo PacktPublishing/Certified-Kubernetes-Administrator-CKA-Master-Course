@@ -1,0 +1,35 @@
+ kubectl taint nodes node1 hardware=ssd:NoExecute
+ 
+ kubectl taint nodes node4 hardware=ssd:NoExecute
+ kubectl taint nodes node4 CostCode=CC1:NoSchedule
+ 
+ vi tainttoleration-nginx-deployment.yaml
+ 
+ 
+ 
+ tolerations:
+ - operator: "Exists"
+ 
+ 
+ kubectl create -f tainttoleration-nginx-deployment.yaml  
+ 
+ 
+ kubectl get pods -o wide
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ kubectl scale deployment withtoleration-nginx-deployment --replicas=8
+ 
+ kubectl delete deployment withtoleration-nginx-deployment
+ 
+ kubectl taint nodes node4 CostCode:NoSchedule-
+ 
+ kubectl taint nodes node1 node1:NoExecute-
+ kubectl taint nodes node4 node4:NoExecute-
+ 
+ kubectl patch node node1 -p '{"spec":{"taints":[]}}'
+ kubectl patch node node4 -p '{"spec":{"taints":[]}}'
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+   
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  

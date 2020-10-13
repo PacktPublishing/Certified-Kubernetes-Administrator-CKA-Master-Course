@@ -1,0 +1,67 @@
+ nodeaffinity-required.yaml
+ 
+ 
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: nodeaffinity-required
+ spec:
+   replicas: 2
+   selector:
+     matchLabels:
+       app: nginx
+   template:
+     metadata:
+       labels:
+         app: nginx
+     spec:
+       affinity:
+         nodeAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+             nodeSelectorTerms:
+             - matchExpressions:
+               - key: availabilityzone
+                 operator: In
+                 values:
+                 - zone1
+                 - zone2
+       containers:
+       - name: nginx
+         image: nginx:latest
+         ports:
+         - containerPort: 80
+ 
+ 
+ 
+ kubectl apply -f nodeaffinity-required.yaml
+ 
+ kubectl get pods -o wide
+ 
+ kubectl describe pod <<podname>> | grep Events: -A 10
+ 
+ 
+ kubectl label nodes node4 availabilityzone=zone1
+ 
+ kubectl get pods
+ 
+ kubectl describe nodes node4 | grep availabilityzone
+ 
+ kubectl label nodes node4 availabilityzone-
+ 
+ kubectl describe nodes node4 | grep availabilityzone
+ 
+ kubectl describe nodes | egrep "Name:|Labels:" -A 7
+ 
+ kubectl get pods -o wide
+ 
+ 
+ kubectl scale deployment nodeaffinity-required --replicas=4
+ 
+ kubectl get pods -o wide
+ 
+ kubectl label nodes node4 availabilityzone=zone2
+ 
+ kubectl label nodes node4 availabilityzone-
+ kubectl delete deployment nodeaffinity-required
+ 
+kubectl get all

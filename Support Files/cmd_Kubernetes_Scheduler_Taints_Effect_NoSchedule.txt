@@ -1,0 +1,44 @@
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ kubectl create deployment tainttoleration-nginx-deployment --image=nginx
+ kubectl get pods -o wide
+ 
+ 
+ kubectl scale deployment tainttoleration-nginx-deployment --replicas=4
+ kubectl get pods -o wide
+ 
+ kubectl describe pods | grep Events -A 10
+ 
+ kubectl describe node node4
+ 
+ kubectl taint nodes node1 hardware:NoExecute-
+ 
+ #kubectl taint nodes node4 NodeMaint:NoSchedule-
+ 
+ kubectl patch node node4 -p '{"spec":{"taints":[]}}'
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ 
+ #kubectl scale deployment tainttoleration-nginx-deployment --replicas=6
+ kubectl edit deploy tainttoleration-nginx-deployment
+ 
+ kubectl describe node node1
+ kubectl describe node node4
+ 
+ 
+ kubectl get all -o wide
+ 
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ 
+ 
+ 
+ kubectl describe nodes | egrep "Name:|Taints:"
+ 
+ kubectl patch node node1 -p '{"spec":{"taints":[]}}'
+ kubectl patch node node4 -p '{"spec":{"taints":[]}}'
+ 
+ 
+kubectl delete deployment tainttoleration-nginx-deployment

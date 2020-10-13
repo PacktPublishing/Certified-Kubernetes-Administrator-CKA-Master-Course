@@ -1,0 +1,104 @@
+kubernetes_scheduler_taints
+
+kubectl describe node node2
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+kubectl create deployment tainttoleration-nginx-deployment --image=nginx
+
+
+
+
+kubectl get all
+
+kubectl scale deployment tainttoleration-nginx-deployment --replicas=8
+
+kubectl get pods -o wide
+
+
+kubectl taint nodes node1 hardware=ssd:NoExecute
+
+kubectl describe node node1
+
+
+#see eviction
+kubectl describe pods | grep Events -A 20
+
+
+kubectl taint nodes node4 NodeMaint=monthly:NoSchedule
+
+kubectl describe node node4
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+kubectl taint nodes node4 CostCode=CC1:NoSchedule
+kubectl taint nodes node4 DriverUpdate:PreferNoSchedule
+
+kubectl describe node node1
+kubectl describe node node4
+kubectl describe nodes | egrep "Name:|Taints:" -A 5
+
+
+kubectl taint nodes node4 CostCode:NoSchedule-
+kubectl taint nodes node4 DriverUpdate:PreferNoSchedule-
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+
+kubectl delete deployment tainttoleration-nginx-deployment
+kubectl get all
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+~~~~~~~~~~~~~~~~~
+noschedule
+~~~~~~~~~
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+kubectl create deployment tainttoleration-nginx-deployment --image=nginx
+kubectl get pods -o wide
+
+
+kubectl scale deployment tainttoleration-nginx-deployment --replicas=4
+kubectl get pods -o wide
+
+kubectl describe pods | grep Events -A 10
+
+kubectl describe node node4
+
+kubectl taint nodes node1 hardware:NoExecute-
+
+#kubectl taint nodes node4 NodeMaint:NoSchedule-
+
+kubectl patch node node4 -p '{"spec":{"taints":[]}}'
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+#kubectl scale deployment tainttoleration-nginx-deployment --replicas=6
+kubectl edit deploy tainttoleration-nginx-deployment
+
+kubectl describe node node1
+kubectl describe node node4
+
+
+kubectl get all -o wide
+
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+
+
+
+kubectl describe nodes | egrep "Name:|Taints:"
+
+kubectl patch node node1 -p '{"spec":{"taints":[]}}'
+kubectl patch node node4 -p '{"spec":{"taints":[]}}'
+
+
+kubectl delete deployment tainttoleration-nginx-deployment
+
+

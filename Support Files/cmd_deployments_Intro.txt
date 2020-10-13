@@ -1,0 +1,11 @@
+https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/controllers/nginx-deployment.yaml
+
+
+kubectl get deployment
+
+kubectl describe deployment/nginx-deployment
+
+
+kubectl get rs
+
+kubectl describe rs/<resultset name>

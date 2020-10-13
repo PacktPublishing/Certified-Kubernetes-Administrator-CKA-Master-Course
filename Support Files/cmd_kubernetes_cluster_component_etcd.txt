@@ -1,0 +1,20 @@
+etcd port - 2379
+
+kubectl describe pod/etcd-node2 --namespace=kube-system
+ 
+kubectl get all --all-namespaces
+
+
+kubectl exec -it pod/etcd-node2 --namespace=kube-system -- /bin/sh
+
+ETCDCTL_API=3 etcdctl --endpoints 127.0.0.1:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key get / --prefix --keys-only
+
+ETCDCTL_API=3 etcdctl --endpoints 127.0.0.1:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key get /registry/services/endpoints/default/redis-master
+
+ETCDCTL_API=3 etcdctl --endpoints 127.0.0.1:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key get /registry/services/endpoints/default/frontend
+
+
+cd /etc/kubernetes/manifests
+
+cat etcd.yaml
+

@@ -1,0 +1,29 @@
+kubectl get pods -o wide
+
+#valid ports range 30000-32767
+
+kubectl create -f service.yaml
+
+~~~~~~~~~~~~~~~~~~~~~
+service.yaml
+~~~~~~~~~~~~~~~~~~~
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  ports:
+  - nodePort: 30200
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx
+  type: NodePort
+
+
+~~~~~~~~~~~~~~~~~~
+
+kubectl get service

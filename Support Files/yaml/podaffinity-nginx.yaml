@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podaffinity-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginxaffinity
+  template:
+    metadata:
+      labels:
+        app: nginxaffinity
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector: 
+              matchExpressions:  
+              - key: app
+                operator: In
+                values:
+                - redis
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80

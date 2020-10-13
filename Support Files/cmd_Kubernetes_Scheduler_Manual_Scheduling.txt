@@ -1,0 +1,35 @@
+kubectl get pods -o wide
+
+spec:
+  nodeName: node3
+  containers:
+  - name: myapp-containe
+  
+
+
+kubectl apply -f schedule_pod_nginx.yaml
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-yaml
+spec:
+  nodeName: node4
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+          name: http
+          
+          
+
+
+kubectl describe pod nginx-yaml
+
+kubectl logs pod/nginx-yaml
+
+https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+
+kubectl delete pod nginx-yaml  

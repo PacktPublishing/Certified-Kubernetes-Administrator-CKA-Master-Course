@@ -1,0 +1,25 @@
+ kubectl apply -f pod-annotations-nginx.yaml
+ 
+ ~~~~~~~~~~`
+ 
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: annotations-nginx-yaml
+   annotations:
+     supportcall: 1800-234-3434
+     costcode: RRTEYEY
+ spec:
+   containers:
+     - image: nginx
+       name: nginx
+       ports:
+         - containerPort: 80
+           name: http
+           
+           ~~~~~~~~~~~~
+ 
+ 
+ kubectl get pods
+ 
+kubectl describe pod annotations-nginx-yaml

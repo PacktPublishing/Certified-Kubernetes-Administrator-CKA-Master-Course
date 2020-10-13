@@ -1,0 +1,18 @@
+ kubectl port-forward --address 0.0.0.0 nginx-yaml 80:80
+ 
+ kubectl exec -it nginx-yaml /bin/bash
+ 
+ kubectl attach -it nginx-yaml
+ 
+cd /usr/share/nginx/html
+
+kubectl exec -it nginx-yaml /bin/bash
+
+mkdir copytest
+cd copytest
+echo "file copy test" >> one.txt
+
+kubectl cp nginx-yaml:/copytest/one.txt /root/CKA/one.txt
+
+kubectl get pods -o wide
+
